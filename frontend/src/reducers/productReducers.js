@@ -7,6 +7,7 @@ import {
 	PRODUCT_DETAILS_FAIL,
 } from '../constants/productConstants'
 
+// all products reducer
 export const productListReducer = (state = { products: [] }, action) => {
 	const { type, payload } = action
 
@@ -22,6 +23,7 @@ export const productListReducer = (state = { products: [] }, action) => {
 	}
 }
 
+// one product reducer
 export const productDetailsReducer = (
 	state = { product: { reviews: [] } },
 	action

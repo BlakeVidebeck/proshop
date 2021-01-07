@@ -9,6 +9,7 @@ import {
 	PRODUCT_DETAILS_FAIL,
 } from '../constants/productConstants'
 
+// for all products
 export const listProducts = () => async dispatch => {
 	try {
 		dispatch({ type: PRODUCT_LIST_REQUEST })
@@ -29,6 +30,7 @@ export const listProducts = () => async dispatch => {
 	}
 }
 
+// for one product
 export const listProductDetails = id => async dispatch => {
 	try {
 		dispatch({ type: PRODUCT_DETAILS_REQUEST })
