@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs'
 
 // users that are already in the database.
-// bcrypt hases 123456 so are ready to be logged in
+// bcrypt hashes 123456 so they are ready to be logged in
 const users = [
 	{
 		name: 'Admin User',

@@ -4,6 +4,7 @@ import colors from 'colors'
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 import connectDB from './config/db.js'
 import productRoutes from './routes/productRoutes.js'
+import userRoutes from './routes/userRoutes.js'
 
 // env config
 dotenv.config()
@@ -13,12 +14,16 @@ connectDB()
 
 const app = express()
 
+// accept json data in the body
+app.use(express.json())
+
 app.get('/', (req, res) => {
 	res.send('Hello')
 })
 
 // routes
 app.use('/api/products', productRoutes)
+app.use('/api/users', userRoutes)
 
 // error handlers
 app.use(notFound)
