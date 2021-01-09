@@ -5,7 +5,6 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
 	switch (type) {
 		case CART_ADD_ITEM:
 			const item = payload
-			console.log(item)
 
 			// find if the item exists in the cart already
 			const existItem = state.cartItems.find(x => x.product === item.product)
@@ -29,7 +28,7 @@ export const cartReducer = (state = { cartItems: [] }, action) => {
 		case CART_REMOVE_ITEM:
 			return {
 				...state,
-				// strip out whatever id we remove
+				// return all the items that does not eqaul the id passed in
 				cartItems: state.cartItems.filter(x => x.product !== payload),
 			}
 		default:
