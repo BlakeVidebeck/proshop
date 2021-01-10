@@ -16,7 +16,7 @@ const protect = asyncHandler(async (req, res, next) => {
 			// the decoded token will include the users ID
 			const decoded = jwt.verify(token, process.env.JWT_SECRET)
 			// find the user from the db using the id from decoded minus the password
-			// and set it as the req.user and have access to it in all the protected routes
+			// and set it as the req.user to have access to it in all the protected routes
 			req.user = await User.findById(decoded.id).select('-password')
 
 			next()

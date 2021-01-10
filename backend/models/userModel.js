@@ -21,10 +21,12 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 // want this to happen pre save (user.Create())
 userSchema.pre('save', async function (next) {
-	// isModifies is apart of mongoose
+	// check to see if password is modified. if it has not been modified then run next
 	if (!this.isModified('password')) {
 		next()
 	}
+	// if password has been modified then
+	// hash the password so its encrypted
 	const salt = await bcrypt.genSalt(10)
 	this.password = await bcrypt.hash(this.password, salt)
 })

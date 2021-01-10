@@ -6,21 +6,29 @@ import {
 	productDetailsReducer,
 } from './reducers/productReducers'
 import { cartReducer } from './reducers/cartReducers'
+import { userLoginReducer } from './reducers/userReducers'
 
 const reducer = combineReducers({
 	productList: productListReducer,
 	productDetails: productDetailsReducer,
 	cart: cartReducer,
+	userLogin: userLoginReducer,
 })
 
-// get the cart items from local storage if it exists and parse it otherwise return an empty array
+// get the cart items from local storage if it exists else return empty array
 const cartItemsFromStoage = localStorage.getItem('cartItems')
 	? JSON.parse(localStorage.getItem('cartItems'))
 	: []
 
+// get the user info from local storage if it exists else return null
+const userInfoFromStoage = localStorage.getItem('userInfo')
+	? JSON.parse(localStorage.getItem('userInfo'))
+	: null
+
 // set the initial state of the app
 const initialState = {
 	cart: { cartItems: cartItemsFromStoage },
+	userLogin: { userInfo: userInfoFromStoage },
 }
 
 const middleware = [thunk]
