@@ -33,9 +33,17 @@ const userInfoFromStoage = localStorage.getItem('userInfo')
 	? JSON.parse(localStorage.getItem('userInfo'))
 	: null
 
+// get the shipping address from local storage if it exists else return empty object
+const shippingAddressFromStorage = localStorage.getItem('shippingAddress')
+	? JSON.parse(localStorage.getItem('shippingAddress'))
+	: {}
+
 // set the initial state of the app
 const initialState = {
-	cart: { cartItems: cartItemsFromStoage },
+	cart: {
+		cartItems: cartItemsFromStoage,
+		shippingAddress: shippingAddressFromStorage,
+	},
 	userLogin: { userInfo: userInfoFromStoage },
 }
 
