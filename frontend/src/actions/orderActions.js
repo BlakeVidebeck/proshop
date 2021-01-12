@@ -7,6 +7,7 @@ import {
 	ORDER_DETAILS_SUCCESS,
 	ORDER_DETAILS_FAIL,
 } from '../constants/orderConstants'
+import { logout } from './userActions'
 
 // create an order
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -48,7 +49,7 @@ export const createOrder = (order) => async (dispatch, getState) => {
 }
 
 // Get order details
-export const getOrderDetais = (id) => async (dispatch, getState) => {
+export const getOrderDetails = (id) => async (dispatch, getState) => {
 	try {
 		dispatch({
 			type: ORDER_DETAILS_REQUEST,
@@ -74,13 +75,16 @@ export const getOrderDetais = (id) => async (dispatch, getState) => {
 			payload: data,
 		})
 	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout())
+		}
 		dispatch({
 			type: ORDER_DETAILS_FAIL,
-			payload:
-				// generic message && custom error message ? custom error message : generic message
-				error.response && error.response.data.message
-					? error.response.data.message
-					: error.message,
+			payload: message,
 		})
 	}
 }
