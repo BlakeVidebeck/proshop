@@ -14,6 +14,10 @@ import {
 	USER_UPDATE_PROFILE_FAIL,
 	USER_UPDATE_PROFILE_REQUEST,
 	USER_UPDATE_PROFILE_SUCCESS,
+	USER_LIST_SUCCESS,
+	USER_LIST_FAIL,
+	USER_LIST_REQUEST,
+	USER_LIST_RESET,
 } from '../constants/userConstants'
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
@@ -62,6 +66,7 @@ export const logout = () => (dispatch) => {
 	dispatch({ type: USER_LOGOUT })
 	dispatch({ type: USER_DETAILS_RESET })
 	dispatch({ type: ORDER_LIST_MY_RESET })
+	dispatch({ type: USER_LIST_RESET })
 }
 
 // User register
@@ -177,6 +182,44 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type: USER_UPDATE_PROFILE_FAIL,
+			payload:
+				// generic message && custom error message ? custom error message : generic message
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message,
+		})
+	}
+}
+
+// list users
+export const listUsers = () => async (dispatch, getState) => {
+	try {
+		dispatch({
+			type: USER_LIST_REQUEST,
+		})
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend to get the users
+		const { data } = await axios.get(`/api/users`, config)
+
+		dispatch({
+			type: USER_LIST_SUCCESS,
+			payload: data,
+		})
+	} catch (error) {
+		dispatch({
+			type: USER_LIST_FAIL,
 			payload:
 				// generic message && custom error message ? custom error message : generic message
 				error.response && error.response.data.message

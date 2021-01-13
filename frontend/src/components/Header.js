@@ -8,7 +8,7 @@ const Header = () => {
 	// call an action
 	const dispatch = useDispatch()
 	// get state
-	const userLogin = useSelector(state => state.userLogin)
+	const userLogin = useSelector((state) => state.userLogin)
 	const { userInfo } = userLogin
 
 	// logout the user
@@ -50,6 +50,20 @@ const Header = () => {
 										<i className='fas fa-user'></i> Sign In
 									</Nav.Link>
 								</LinkContainer>
+							)}
+							{/* if logged in user is admin then show this dropdown */}
+							{userInfo && userInfo.isAdmin && (
+								<NavDropdown title='Admin' id='adminmenu'>
+									<LinkContainer to='admin/userlist'>
+										<NavDropdown.Item>Users</NavDropdown.Item>
+									</LinkContainer>
+									<LinkContainer to='admin/productlist'>
+										<NavDropdown.Item>Products</NavDropdown.Item>
+									</LinkContainer>
+									<LinkContainer to='admin/orderlist'>
+										<NavDropdown.Item>Orders</NavDropdown.Item>
+									</LinkContainer>
+								</NavDropdown>
 							)}
 						</Nav>
 					</Navbar.Collapse>
