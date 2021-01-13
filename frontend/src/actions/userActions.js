@@ -3,6 +3,7 @@ import {
 	USER_DETAILS_FAIL,
 	USER_DETAILS_REQUEST,
 	USER_DETAILS_SUCCESS,
+	USER_DETAILS_RESET,
 	USER_LOGIN_FAIL,
 	USER_LOGIN_REQUEST,
 	USER_LOGIN_SUCCESS,
@@ -14,9 +15,10 @@ import {
 	USER_UPDATE_PROFILE_REQUEST,
 	USER_UPDATE_PROFILE_SUCCESS,
 } from '../constants/userConstants'
+import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
 // User login
-export const login = (email, password) => async dispatch => {
+export const login = (email, password) => async (dispatch) => {
 	try {
 		dispatch({
 			type: USER_LOGIN_REQUEST,
@@ -55,13 +57,15 @@ export const login = (email, password) => async dispatch => {
 }
 
 // User logout
-export const logout = () => dispatch => {
+export const logout = () => (dispatch) => {
 	localStorage.removeItem('userInfo')
 	dispatch({ type: USER_LOGOUT })
+	dispatch({ type: USER_DETAILS_RESET })
+	dispatch({ type: ORDER_LIST_MY_RESET })
 }
 
 // User register
-export const register = (name, email, password) => async dispatch => {
+export const register = (name, email, password) => async (dispatch) => {
 	try {
 		dispatch({
 			type: USER_REGISTER_REQUEST,
@@ -105,7 +109,7 @@ export const register = (name, email, password) => async dispatch => {
 	}
 }
 
-export const getUserDetails = id => async (dispatch, getState) => {
+export const getUserDetails = (id) => async (dispatch, getState) => {
 	try {
 		dispatch({
 			type: USER_DETAILS_REQUEST,
@@ -144,7 +148,7 @@ export const getUserDetails = id => async (dispatch, getState) => {
 }
 
 // update user profile
-export const updateUserProfile = user => async (dispatch, getState) => {
+export const updateUserProfile = (user) => async (dispatch, getState) => {
 	try {
 		dispatch({
 			type: USER_UPDATE_PROFILE_REQUEST,
