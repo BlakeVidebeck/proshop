@@ -18,6 +18,9 @@ import {
 	USER_LIST_FAIL,
 	USER_LIST_REQUEST,
 	USER_LIST_RESET,
+	USER_DELETE_SUCCESS,
+	USER_DELETE_FAIL,
+	USER_DELETE_REQUEST,
 } from '../constants/userConstants'
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
 
@@ -194,9 +197,7 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 // list users
 export const listUsers = () => async (dispatch, getState) => {
 	try {
-		dispatch({
-			type: USER_LIST_REQUEST,
-		})
+		dispatch({ type: USER_LIST_REQUEST })
 
 		// destructure the userInfo from the state
 		const {
@@ -220,6 +221,41 @@ export const listUsers = () => async (dispatch, getState) => {
 	} catch (error) {
 		dispatch({
 			type: USER_LIST_FAIL,
+			payload:
+				// generic message && custom error message ? custom error message : generic message
+				error.response && error.response.data.message
+					? error.response.data.message
+					: error.message,
+		})
+	}
+}
+
+// list users
+export const deleteUser = (id) => async (dispatch, getState) => {
+	try {
+		dispatch({ type: USER_DELETE_REQUEST })
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend to delete the user
+		await axios.delete(`/api/users/${id}`, config)
+
+		dispatch({
+			type: USER_DELETE_SUCCESS,
+		})
+	} catch (error) {
+		dispatch({
+			type: USER_DELETE_FAIL,
 			payload:
 				// generic message && custom error message ? custom error message : generic message
 				error.response && error.response.data.message
