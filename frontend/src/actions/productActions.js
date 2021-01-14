@@ -7,10 +7,14 @@ import {
 	PRODUCT_DETAILS_REQUEST,
 	PRODUCT_DETAILS_SUCCEESS,
 	PRODUCT_DETAILS_FAIL,
+	PRODUCT_DELETE_SUCCEESS,
+	PRODUCT_DELETE_FAIL,
+	PRODUCT_DELETE_REQUEST,
 } from '../constants/productConstants'
+import { logout } from './userActions'
 
-// for all products
-export const listProducts = () => async dispatch => {
+// get all products
+export const listProducts = () => async (dispatch) => {
 	try {
 		dispatch({ type: PRODUCT_LIST_REQUEST })
 
@@ -30,8 +34,8 @@ export const listProducts = () => async dispatch => {
 	}
 }
 
-// for one product
-export const listProductDetails = id => async dispatch => {
+// get one product
+export const listProductDetails = (id) => async (dispatch) => {
 	try {
 		dispatch({ type: PRODUCT_DETAILS_REQUEST })
 
@@ -47,6 +51,46 @@ export const listProductDetails = id => async dispatch => {
 				error.response && error.response.data.message
 					? error.response.data.message
 					: error.message,
+		})
+	}
+}
+
+// delete product
+export const deleteProduct = (id) => async (dispatch, getState) => {
+	try {
+		dispatch({
+			type: PRODUCT_DELETE_REQUEST,
+		})
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend
+		await axios.delete(`/api/products/${id}`, config)
+
+		dispatch({
+			type: PRODUCT_DELETE_SUCCEESS,
+		})
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout())
+		}
+		dispatch({
+			type: PRODUCT_DELETE_FAIL,
+			payload: message,
 		})
 	}
 }
