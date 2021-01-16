@@ -22,7 +22,9 @@ import {
 	orderCreateReducer,
 	orderDetailsReducer,
 	orderPayReducer,
+	orderDeliverReducer,
 	orderListMyReducer,
+	orderListReducer,
 } from './reducers/orderReducers'
 
 const reducer = combineReducers({
@@ -45,7 +47,9 @@ const reducer = combineReducers({
 	orderCreate: orderCreateReducer,
 	orderDetails: orderDetailsReducer,
 	orderPay: orderPayReducer,
+	orderDeliver: orderDeliverReducer,
 	orderListMy: orderListMyReducer,
+	orderList: orderListReducer,
 })
 
 // get the cart items from local storage if it exists else return empty array

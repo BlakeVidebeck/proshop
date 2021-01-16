@@ -12,6 +12,12 @@ import {
 	ORDER_LIST_MY_SUCCESS,
 	ORDER_LIST_MY_FAIL,
 	ORDER_LIST_MY_REQUEST,
+	ORDER_LIST_FAIL,
+	ORDER_LIST_SUCCESS,
+	ORDER_LIST_REQUEST,
+	ORDER_DELIVER_REQUEST,
+	ORDER_DELIVER_FAIL,
+	ORDER_DELIVER_SUCCESS,
 } from '../constants/orderConstants'
 import { logout } from './userActions'
 
@@ -147,6 +153,51 @@ export const payOrder = (orderId, paymentResult) => async (
 	}
 }
 
+// Deliver order
+export const deliverOrder = (order) => async (dispatch, getState) => {
+	try {
+		dispatch({
+			type: ORDER_DELIVER_REQUEST,
+		})
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend
+		const { data } = await axios.put(
+			`/api/orders/${order._id}/deliver`,
+			{},
+			config
+		)
+
+		dispatch({
+			type: ORDER_DELIVER_SUCCESS,
+			payload: data,
+		})
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout())
+		}
+		dispatch({
+			type: ORDER_DELIVER_FAIL,
+			payload: message,
+		})
+	}
+}
+
 // List all the current logged in users orders
 export const listMyOrders = () => async (dispatch, getState) => {
 	try {
@@ -183,6 +234,47 @@ export const listMyOrders = () => async (dispatch, getState) => {
 		}
 		dispatch({
 			type: ORDER_LIST_MY_FAIL,
+			payload: message,
+		})
+	}
+}
+
+// List all the orders for admin
+export const listOrders = () => async (dispatch, getState) => {
+	try {
+		dispatch({
+			type: ORDER_LIST_REQUEST,
+		})
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend
+		const { data } = await axios.get(`/api/orders`, config)
+
+		dispatch({
+			type: ORDER_LIST_SUCCESS,
+			payload: data,
+		})
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout())
+		}
+		dispatch({
+			type: ORDER_LIST_FAIL,
 			payload: message,
 		})
 	}
