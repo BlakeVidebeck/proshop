@@ -6,18 +6,20 @@ import { Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { listProducts } from '../actions/productActions'
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
+	const keyword = match.params.keyword
+
 	// Hooks to replace connect
 	// same as mapDispatchToProps
 	const dispatch = useDispatch()
 	// same as mapStateToProps
-	const productList = useSelector(state => state.productList)
+	const productList = useSelector((state) => state.productList)
 
 	const { loading, error, products } = productList
 
 	useEffect(() => {
-		dispatch(listProducts())
-	}, [dispatch])
+		dispatch(listProducts(keyword))
+	}, [dispatch, keyword])
 
 	return (
 		<>
@@ -28,7 +30,7 @@ const HomeScreen = () => {
 				<Message variant='danger'>{error}</Message>
 			) : (
 				<Row>
-					{products.map(product => (
+					{products.map((product) => (
 						<Col key={product._id} sm={12} md={6} lg={4} xl={3}>
 							<Product product={product} />
 						</Col>
