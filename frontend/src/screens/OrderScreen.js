@@ -80,7 +80,7 @@ const OrderScreen = ({ match, history }) => {
 				setSdkReady(true)
 			}
 		}
-	}, [dispatch, order, orderId, successPay, successDeliver])
+	}, [dispatch, order, orderId, successPay, successDeliver, history, userInfo])
 
 	// when the paypal button is clicked
 	const successPaymentHandler = (paymentResult) => {
