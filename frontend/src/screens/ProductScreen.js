@@ -9,6 +9,7 @@ import Meta from '../components/Meta'
 import {
 	listProductDetails,
 	createProductReview,
+	deleteProductReview,
 } from '../actions/productActions'
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
 
@@ -31,6 +32,12 @@ const ProductScreen = ({ history, match }) => {
 		error: errorProductReview,
 	} = productReviewCreate
 
+	const productReviewDelete = useSelector((state) => state.productReviewDelete)
+	const {
+		success: successDeleteProductReview,
+		error: errorDeleteProductReview,
+	} = productReviewDelete
+
 	useEffect(() => {
 		if (successProductReview) {
 			alert('Review Submitted')
@@ -39,7 +46,7 @@ const ProductScreen = ({ history, match }) => {
 			dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
 		}
 		dispatch(listProductDetails(match.params.id))
-	}, [dispatch, match, successProductReview])
+	}, [dispatch, match, successProductReview, successDeleteProductReview])
 
 	// will redirect to cart with quantity chosen
 	const addToCartHandler = () => {
@@ -56,6 +63,13 @@ const ProductScreen = ({ history, match }) => {
 				comment,
 			})
 		)
+	}
+
+	// delete a review
+	const deleteReviewHandler = (reviewId) => {
+		if (window.confirm('Are you sure you want to delete this review?')) {
+			dispatch(deleteProductReview(product._id, reviewId))
+		}
 	}
 
 	return (
@@ -168,6 +182,20 @@ const ProductScreen = ({ history, match }) => {
 											<Rating rating={review.rating} />
 											<p>{review.createdAt.substring(0, 10)}</p>
 											<p>{review.comment}</p>
+											{errorDeleteProductReview && (
+												<Message variant='danger'>
+													{errorDeleteProductReview}
+												</Message>
+											)}
+											{((userInfo && review.user === userInfo._id) ||
+												(userInfo && userInfo.isAdmin)) && (
+												<Button
+													variant='danger'
+													onClick={() => deleteReviewHandler(review._id)}
+												>
+													Delete Review
+												</Button>
+											)}
 										</ListGroup.Item>
 									))
 									.reverse()}

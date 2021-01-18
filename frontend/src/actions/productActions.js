@@ -22,6 +22,9 @@ import {
 	PRODUCT_TOP_REQUEST,
 	PRODUCT_TOP_SUCCESS,
 	PRODUCT_TOP_FAIL,
+	PRODUCT_DELETE_REVIEW_REQUEST,
+	PRODUCT_DELETE_REVIEW_SUCCESS,
+	PRODUCT_DELETE_REVIEW_FAIL,
 } from '../constants/productConstants'
 import { logout } from './userActions'
 
@@ -237,6 +240,49 @@ export const createProductReview = (productId, review) => async (
 		}
 		dispatch({
 			type: PRODUCT_CREATE_REVIEW_FAIL,
+			payload: message,
+		})
+	}
+}
+
+// Delete a review on a product
+export const deleteProductReview = (productId, reviewId) => async (
+	dispatch,
+	getState
+) => {
+	try {
+		dispatch({
+			type: PRODUCT_DELETE_REVIEW_REQUEST,
+		})
+
+		// destructure the userInfo from the state
+		const {
+			userLogin: { userInfo },
+		} = getState()
+
+		// pass in the token from the user state to access protected routes
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		}
+
+		// make a request to the backend
+		await axios.delete(`/api/products/${productId}/reviews/${reviewId}`, config)
+
+		dispatch({
+			type: PRODUCT_DELETE_REVIEW_SUCCESS,
+		})
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout())
+		}
+		dispatch({
+			type: PRODUCT_DELETE_REVIEW_FAIL,
 			payload: message,
 		})
 	}
